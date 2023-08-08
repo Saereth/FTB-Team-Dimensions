@@ -36,6 +36,7 @@ public class FTBDimensionsConfig {
         public final ForgeConfigSpec.BooleanValue teamSpecificNetherEntryPoint;
         public final ForgeConfigSpec.BooleanValue placeEntitiesInStartStructure;
         public final ForgeConfigSpec.IntValue replaceColdBiomesNearSpawn;
+        public final ForgeConfigSpec.BooleanValue allowNormalWorldgenInTeamDimensions;
 
         public CategoryCommonGeneral() {
             COMMON_BUILDER.push("general");
@@ -79,6 +80,10 @@ public class FTBDimensionsConfig {
             this.replaceColdBiomesNearSpawn = COMMON_BUILDER
                     .comment("If > 0, any chunk closer than this to spawn with a cold biome (i.e. water can freeze) in its X/Z midpoint will have its biome replaced with 'minecraft:plains'. Set to 0 to disable all replacement.")
                     .defineInRange("replaceColdBiomesNearSpawn", 64, 0, Integer.MAX_VALUE);
+
+            this.allowNormalWorldgenInTeamDimensions = COMMON_BUILDER
+                    .comment("If true, then normal worldgen will be allowed in team dimensions. If false, then only team-specific worldgen will be allowed.")
+                    .define("allowNormalWorldgenInTeamDimensions", false);
 
             COMMON_BUILDER.pop();
         }

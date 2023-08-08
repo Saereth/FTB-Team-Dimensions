@@ -7,6 +7,7 @@ import dev.ftb.mods.ftbteamdimensions.FTBDimensionsConfig;
 import dev.ftb.mods.ftbteamdimensions.FTBTeamDimensions;
 import dev.ftb.mods.ftbteamdimensions.dimensions.level.chunkgen.MultiBiomeVoidChunkGenerator;
 import dev.ftb.mods.ftbteamdimensions.dimensions.level.chunkgen.SimpleVoidChunkGenerator;
+import dev.ftb.mods.ftbteamdimensions.dimensions.level.chunkgen.StandardChunkGenerator;
 import dev.ftb.mods.ftbteamdimensions.dimensions.prebuilt.PrebuiltStructure;
 import dev.ftb.mods.ftbteamdimensions.dimensions.prebuilt.PrebuiltStructureManager;
 import dev.ftb.mods.ftbteamdimensions.net.UpdateDimensionsList;
@@ -21,11 +22,13 @@ import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.ServerLevelData;
@@ -69,10 +72,13 @@ public class DynamicDimensionManager {
 				ResourceKey.create(Registry.DIMENSION_TYPE_REGISTRY, dimensionTypeId)
 		);
 
-		// TODO allow specification of other generation types
-		ChunkGenerator chunkGenerator = FTBDimensionsConfig.COMMON_GENERAL.singleBiomeDimension.get() ?
-				SimpleVoidChunkGenerator.simpleVoidChunkGen(registryAccess, prebuiltStructureId) :
-				MultiBiomeVoidChunkGenerator.multiBiomeVoidChunkGen(registryAccess, prebuiltStructureId);
+		// TODO allow further specification of other generation types
+		ChunkGenerator chunkGenerator = FTBDimensionsConfig.COMMON_GENERAL.allowNormalWorldgenInTeamDimensions.get() ?
+
+				StandardChunkGenerator.multiBiomeStandardChunkGen(registryAccess, prebuiltStructureId) :
+				(FTBDimensionsConfig.COMMON_GENERAL.singleBiomeDimension.get() ?
+						SimpleVoidChunkGenerator.simpleVoidChunkGen(registryAccess, prebuiltStructureId) :
+						MultiBiomeVoidChunkGenerator.multiBiomeVoidChunkGen(registryAccess, prebuiltStructureId));
 
 		LevelStem dimension = new LevelStem(typeHolder, chunkGenerator);
 
